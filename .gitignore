@@ -1,0 +1,9 @@
+Include
+Lib
+Scripts
+share
+*.cfg
+__pycache__
+.env
+temp.py
+*.json

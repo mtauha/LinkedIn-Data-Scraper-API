@@ -22,6 +22,7 @@ class ProfileItem(scrapy.Item):
     current_organization = scrapy.Field()
     no_of_connections = scrapy.Field()
     education = scrapy.Field()
+    project = scrapy.Field()
     experience = scrapy.Field()
     licenses_and_certifications = scrapy.Field()
     recommendations = scrapy.Field()
@@ -29,6 +30,11 @@ class ProfileItem(scrapy.Item):
     languages = scrapy.Field()
     organizations = scrapy.Field()
 
+
+class ProjectItem(scrapy.Item):
+    name = scrapy.Field()
+    description= scrapy.Field()
+    
 class EducationItem(scrapy.Item):
     url = scrapy.Field()
     organization = scrapy.Field()

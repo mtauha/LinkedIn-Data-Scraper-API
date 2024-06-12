@@ -10,4 +10,12 @@ from itemadapter import ItemAdapter
 
 class ScraperPipeline:
     def process_item(self, item, spider):
-        return item
+        adapter = ItemAdapter(item)
+
+        fields = adapter.field_names()
+
+        for field in fields:
+            if field != 'description':
+                value = adapter.get(field)
+                if value:
+                    adapter[field] = value.strip()

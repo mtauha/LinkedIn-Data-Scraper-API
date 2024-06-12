@@ -21,6 +21,7 @@ class ProfileItem(scrapy.Item):
     current_institute = scrapy.Field()
     current_organization = scrapy.Field()
     no_of_connections = scrapy.Field()
+    no_of_followers = scrapy.Field()
     education = scrapy.Field()
     project = scrapy.Field()
     experience = scrapy.Field()
@@ -34,7 +35,8 @@ class ProfileItem(scrapy.Item):
 class ProjectItem(scrapy.Item):
     name = scrapy.Field()
     description= scrapy.Field()
-    
+    other_creators = scrapy.Field()
+
 class EducationItem(scrapy.Item):
     url = scrapy.Field()
     organization = scrapy.Field()
@@ -57,6 +59,7 @@ class LicensesAndCertificationItem(scrapy.Item):
     url = scrapy.Field()
     name = scrapy.Field()
     organization = scrapy.Field()
+    organization_url = scrapy.Field()
     issue_date = scrapy.Field()
     credential_id = scrapy.Field()
 
@@ -77,5 +80,3 @@ class LanguagesItem(scrapy.Item):
 class OrganizationsItem(scrapy.Item):
     organization = scrapy.Field()
     description = scrapy.Field()
-
-

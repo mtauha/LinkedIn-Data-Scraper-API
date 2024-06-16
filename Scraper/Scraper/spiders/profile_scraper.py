@@ -1,6 +1,6 @@
 from typing import Iterable
 import scrapy, re
-from Scraper.items import (
+from Scraper.Scraper.items import (
     ProfileItem,
     EducationItem,
     ExperienceItem,
@@ -25,7 +25,6 @@ class Profile(scrapy.Spider):
             yield scrapy.Request(
                 url=profile_url,
                 callback=self.parse_profile,
-                meta={"profile": profile, "url": profile_url},
             )
 
     def extract_education_details(self, edu):
@@ -73,7 +72,7 @@ class Profile(scrapy.Spider):
 
     def extract_licenses_and_certifications_details(self, lic):
         def extract_credential_id(url):
-            pattern = r'\/verify\/([A-Z0-9]+)\?'
+            pattern = r"\/verify\/([A-Z0-9]+)\?"
             match = re.search(pattern, url)
             if match:
                 return match.group(1)
@@ -81,27 +80,27 @@ class Profile(scrapy.Spider):
 
         lic_item = LicensesAndCertificationItem()
         lic_item["url"] = (
-            lic.xpath(".//div/a/@href").get().strip()
+            lic.xpath(".//div/a/@href").get()
             if lic.xpath(".//div/a/@href").get()
             else "None"
         )
         lic_item["name"] = (
-            lic.xpath(".//h3/a/text()").get().strip()
+            lic.xpath(".//h3/a/text()").get()
             if lic.xpath(".//h3/a/text()").get()
             else "None"
         )
         lic_item["organization"] = (
-            lic.xpath(".//h4/a/text()").get().strip()
+            lic.xpath(".//h4/a/text()").get()
             if lic.xpath(".//h4/a/text()").get()
             else "None"
         )
         lic_item["organization_url"] = (
-            lic.xpath("'.//a/@href'").get().strip()
+            lic.xpath("'.//a/@href'").get()
             if lic.xpath("'.//a/@href'").get()
             else "None"
         )
         lic_item["issue_date"] = (
-            lic.xpath(".//div/span[1]/time/text()").get().strip()
+            lic.xpath(".//div/span[1]/time/text()").get()
             if lic.xpath(".//div/span[1]/time/text()").get()
             else "None"
         )
@@ -116,17 +115,17 @@ class Profile(scrapy.Spider):
     def extract_recommendations_details(self, rec):
         rec_item = RecommendationItem()
         rec_item["recommender"] = (
-            rec.xpath(".//h3/text()").get().strip()
+            rec.xpath(".//h3/text()").get()
             if rec.xpath(".//h3/text()").get()
             else "None"
         )
         rec_item["url"] = (
-            rec.xpath(".//a/@href").get().strip()
+            rec.xpath(".//a/@href").get()
             if rec.xpath(".//a/@href").get()
             else "None"
         )
         rec_item["recommendation"] = (
-            rec.xpath(".//p/text()").get().strip()
+            rec.xpath(".//p/text()").get()
             if rec.xpath(".//p/text()").get()
             else "None"
         )
@@ -135,17 +134,17 @@ class Profile(scrapy.Spider):
     def extract_honors_and_awards_details(self, award):
         award_item = HonorsAndAwardsItem()
         award_item["award"] = (
-            award.xpath(".//h3/text()").get().strip()
+            award.xpath(".//h3/text()").get()
             if award.xpath(".//h3/text()").get()
             else "None"
         )
         award_item["awarding_date"] = (
-            award.xpath(".//span/time/text()").get().strip()
+            award.xpath(".//span/time/text()").get()
             if award.xpath(".//span/time/text()").get()
             else "None"
         )
         award_item["description"] = (
-            award.xpath(".//p/text()").get().strip()
+            award.xpath(".//p/text()").get()
             if award.xpath(".//p/text()").get()
             else "None"
         )
@@ -154,12 +153,12 @@ class Profile(scrapy.Spider):
     def extract_languages_details(self, lang):
         lang_item = LanguagesItem()
         lang_item["language"] = (
-            lang.xpath(".//h3/text()").get().strip()
+            lang.xpath(".//h3/text()").get()
             if lang.xpath(".//h3/text()").get()
             else "None"
         )
         lang_item["description"] = (
-            lang.xpath(".//h4/text()").get().strip()
+            lang.xpath(".//h4/text()").get()
             if lang.xpath(".//h4/text()").get()
             else "None"
         )
@@ -168,12 +167,12 @@ class Profile(scrapy.Spider):
     def extract_organizations_details(self, org):
         org_item = OrganizationsItem()
         org_item["organization"] = (
-            org.xpath(".//h3/text()").get().strip()
+            org.xpath(".//h3/text()").get()
             if org.xpath(".//h3/text()").get()
             else "None"
         )
         org_item["description"] = (
-            org.xpath(".//p/text()").get().strip()
+            org.xpath(".//p/text()").get()
             if org.xpath(".//p/text()").get()
             else "None"
         )
@@ -182,19 +181,21 @@ class Profile(scrapy.Spider):
     def extract_project_details(self, proj):
         project_item = ProjectItem()
         project_item["name"] = (
-            proj.xpath(".//h3/text()").get().strip()
+            proj.xpath(".//h3/text()").get()
             if proj.xpath(".//h3/text()").get()
             else "None"
         )
-        description = proj.xpath('.//*[@class="show-more-less-text__text--more"]/text()') or proj.xpath('.//*[@class="show-more-less-text__text--less"]/text()')
-        description = " ".join([text.get().strip() for text in description])
+        description = proj.xpath(
+            './/*[@class="show-more-less-text__text--more"]/text()'
+        ) or proj.xpath('.//*[@class="show-more-less-text__text--less"]/text()')
+        description = " ".join([text.get() for text in description])
         project_item["description"] = description if description else "None"
 
         if proj.xpath(".//ul"):
             others = {}
             for other in range(1, len(proj.xpath(".//ul")) + 1):
-                others[proj.xpath(f".//li[{other}]/a/@title").get().strip()] = (
-                    proj.xpath(f".//li[{other}]/a/@href").get().strip()
+                others[proj.xpath(f".//li[{other}]/a/@title").get()] = (
+                    proj.xpath(f".//li[{other}]/a/@href").get()
                 )
 
             project_item["other_creators"] = others
@@ -208,14 +209,14 @@ class Profile(scrapy.Spider):
 
         # Summary Section:
         summary_box = response.css("section.top-card-layout")
-        item["name"] = summary_box.css("h1::text").get().strip()
-        item["description"] = summary_box.css("h2::text").get().strip()
+        item["name"] = summary_box.css("h1::text").get()
+        item["description"] = summary_box.css("h2::text").get()
         item["country"] = (
             summary_box.xpath(
                 '//*[@id="main-content"]/section[1]/div/section/section[1]/div/div[2]/div[1]/h3/div/div[1]/span[1]/text()'
             )
             .get()
-            .strip()
+            
         )
 
         if summary_box.xpath(
@@ -226,14 +227,14 @@ class Profile(scrapy.Spider):
                     '//*[@id="main-content"]/section[1]/div/section/section[1]/div/div[2]/div[2]/div/div[2]/a/span/text()'
                 )
                 .get()
-                .strip()
+                
             )
             item["current_organization"] = (
                 summary_box.xpath(
                     '//*[@id="main-content"]/section[1]/div/section/section[1]/div/div[2]/div[2]/div/div[1]/a/span/text()'
                 )
                 .get()
-                .strip()
+                
             )
         else:
             item["current_institute"] = (
@@ -241,7 +242,7 @@ class Profile(scrapy.Spider):
                     '//*[@id="main-content"]/section[1]/div/section/section[1]/div/div[2]/div[2]/div/div[1]/a/span/text()'
                 )
                 .get()
-                .strip()
+                
             )
 
         if "followers" in response.xpath(
@@ -253,7 +254,7 @@ class Profile(scrapy.Spider):
                     '//*[@id="main-content"]/section[1]/div/section/section[1]/div/div[2]/div[1]/h3/div/div[3]/span/text()'
                 )
                 .get()
-                .strip()
+                
                 .removesuffix(" followers")
                 .replace("K", "000")
             )
@@ -263,7 +264,7 @@ class Profile(scrapy.Spider):
                     '//*[@id="main-content"]/section[1]/div/section/section[1]/div/div[2]/div[1]/h3/div/div[3]/span[2]/text()'
                 )
                 .get()
-                .strip()
+                
                 .removesuffix(" connections")
             )
         else:
@@ -272,7 +273,7 @@ class Profile(scrapy.Spider):
                     '//*[@id="main-content"]/section[1]/div/section/section[1]/div/div[2]/div[1]/h3/div/div[3]/span/text()'
                 )
                 .get()
-                .strip()
+                
                 .removesuffix(" connections")
             )
 
@@ -393,9 +394,7 @@ class Profile(scrapy.Spider):
 
         """Licenses and Certifications"""
         licenses = []
-        lic_response = response.xpath(
-            './/*[@data-section="certifications"]'
-        )
+        lic_response = response.xpath('.//*[@data-section="certifications"]')
         if lic_response:
             for lic in range(1, len(lic_response.xpath(".//li")) + 1):
                 licenses.append(

@@ -9,6 +9,12 @@
 from dotenv import load_dotenv
 import os
 
+LOG_LEVEL = "INFO"  # Available levels: CRITICAL, ERROR, WARNING, INFO, DEBUG
+LOG_ENABLED = True
+LOG_FILE = "output.log"  # Path to the log file
+LOG_FORMAT = "%(asctime)s [%(name)s] %(levelname)s: %(message)s"
+LOG_DATEFORMAT = "%Y-%m-%d %H:%M:%S"
+
 load_dotenv(".env")
 BOT_NAME = "Scraper"
 PROFILE_LIST = [
@@ -23,9 +29,11 @@ SCRAPEOPS_PROXY_ENABLED = True
 
 DOWNLOADER_MIDDLEWARES = {
     "scrapeops_scrapy_proxy_sdk.scrapeops_scrapy_proxy_sdk.ScrapeOpsScrapyProxySdk": 400,
+    "scrapy.downloadermiddlewares.offsite.OffsiteMiddleware": None,
 }
 
-
+DOWNLOAD_TIMEOUT = 30
+RETRY_ENABLED = False
 def get(setting_name):
     # Check if the setting exists in the globals() dictionary
     if setting_name in globals():
@@ -84,9 +92,9 @@ CONCURRENT_REQUESTS = 1
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-# ITEM_PIPELINES = {
-#    "Scraper.pipelines.ScraperPipeline": 300,
-# }
+ITEM_PIPELINES = {
+   "Scraper.pipelines.ScraperPipeline": 300,
+}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
